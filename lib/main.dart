@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/homepage.dart'; // Updated import path
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'screens/homepage.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,14 +15,43 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class UserSelectionScreen extends StatelessWidget {
-  final List<String> users = ['sheriff', 'flygorithm'];
+class UserSelectionScreen extends StatefulWidget {
+  @override
+  _UserSelectionScreenState createState() => _UserSelectionScreenState();
+}
+
+class _UserSelectionScreenState extends State<UserSelectionScreen> {
+  List<String> users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUsers();
+  }
+
+  Future<void> fetchUsers() async {
+    try {
+      final response = await http.get(Uri.parse('http://82.223.54.117:5000/users'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          users = data.cast<String>();
+        });
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (e) {
+      print('Error fetching users: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Select User')),
-      body: ListView.builder(
+      body: users.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
         itemCount: users.length,
         itemBuilder: (context, index) {
           return Padding(
@@ -29,7 +60,9 @@ class UserSelectionScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Homepage(userName: users[index])),
+                  MaterialPageRoute(
+                    builder: (context) => Homepage(userName: users[index]),
+                  ),
                 );
               },
               child: Text(users[index]),
