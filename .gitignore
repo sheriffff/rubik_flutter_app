@@ -1,0 +1,24 @@
+# Generated files
+build/
+.dart_tool/
+.idea/
+android/.gradle/
+android/app/build/
+ios/Flutter/.last_build_id
+ios/Pods/
+ios/build/
+macos/Flutter/ephemeral/
+linux/build/
+windows/build/
+web/build/
+
+# Dependency logs
+pubspec.lock
+
+# Other
+*.iml
+*.metadata
+*.log
+*.bak
+*.swp
+*.DS_Store
