@@ -30,7 +30,18 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.userName),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/rubiks_cube.png',
+              width: 24,
+              height: 24,
+            ),
+            SizedBox(width: 8),
+            Text(widget.userName),
+          ],
+        ),
       ),
       body: _screens[_currentIndex],  // Show selected screen
       bottomNavigationBar: BottomNavigationBar(

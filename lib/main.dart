@@ -48,28 +48,41 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Select User')),
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/rubiks_cube.png',
+              width: 24,
+              height: 24,
+            ),
+            SizedBox(width: 8),
+            Text('Select User'),
+          ],
+        ),
+      ),
       body: users.isEmpty
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Homepage(userName: users[index]),
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Homepage(userName: users[index]),
+                        ),
+                      );
+                    },
+                    child: Text(users[index]),
                   ),
                 );
               },
-              child: Text(users[index]),
             ),
-          );
-        },
-      ),
     );
   }
 }
