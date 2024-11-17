@@ -1,16 +1,8 @@
-# rubik_app
+# Rubik BLD copilot
 
-An app to manage Rubik BLD method
+An app to manage your Rubik BLD method
 
-## Getting Started
+<img width=100 src="https://i.ibb.co/TcYYJjc/48301f3f3f2449f3eafb874add5a966e-removebg-preview.png">
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[sheriff Rubik NR 2008](https://www.youtube.com/watch?v=RD9LsOT2KCQ&ab_channel=sheriff19891989)  
+[sheriff Rubik PR 2024](https://www.youtube.com/watch?v=70QKovD5SjE&ab_channel=sheriff19891989)
