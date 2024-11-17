@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'User Selector',
+      title: 'Rubik BLD Copilot',
       home: UserSelectionScreen(),
     );
   }
@@ -58,7 +58,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
               height: 24,
             ),
             SizedBox(width: 8),
-            Text('Select User'),
+            Text('Rubik BLD Copilot'),
           ],
         ),
       ),
