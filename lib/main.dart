@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'screens/homepage.dart';  // Import homepage
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'screens/homepage.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,18 +21,37 @@ class UserSelectionScreen extends StatefulWidget {
 }
 
 class _UserSelectionScreenState extends State<UserSelectionScreen> {
-  List<String> users = ['Sheriff', 'Flygorithm'];
+  List<String> users = [];
 
   @override
   void initState() {
     super.initState();
+    fetchUsers();
+  }
+
+  Future<void> fetchUsers() async {
+    try {
+      final response = await http.get(Uri.parse('http://82.223.54.117:5000/users'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          users = data.cast<String>();
+        });
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (e) {
+      print('Error fetching users: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Select User')),
-      body: ListView.builder(
+      body: users.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
         itemCount: users.length,
         itemBuilder: (context, index) {
           return Padding(
