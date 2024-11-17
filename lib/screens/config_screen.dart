@@ -3,6 +3,10 @@ import 'sticker_letters_tab.dart';  // Import Sticker Letters Tab
 import 'letter_pairs_tab.dart';    // Import Letter Pairs Tab
 
 class ConfigScreen extends StatefulWidget {
+  final String userName;
+
+  ConfigScreen({required this.userName});
+
   @override
   _ConfigScreenState createState() => _ConfigScreenState();
 }
@@ -39,7 +43,7 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
       body: TabBarView(
         controller: _tabController,
         children: [
-          StickerLettersTab(),
+          StickerLettersTab(userName: widget.userName),
           LetterPairsTab(),
         ],
       ),

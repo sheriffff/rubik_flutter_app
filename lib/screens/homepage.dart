@@ -15,10 +15,16 @@ class _HomepageState extends State<Homepage> {
   int _currentIndex = 0;  // Index for bottom navigation
 
   // Screens for bottom navigation
-  final List<Widget> _screens = [
-    ConfigScreen(),
-    PracticeScreen(),
-  ];
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      ConfigScreen(userName: widget.userName),
+      PracticeScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

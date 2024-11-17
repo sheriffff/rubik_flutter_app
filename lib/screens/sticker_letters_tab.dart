@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class StickerLettersTab extends StatelessWidget {
+  final String userName;
+
+  StickerLettersTab({required this.userName});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -21,13 +25,13 @@ class StickerLettersTab extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      'Edges Content',
+                      'Edges Content: $userName',
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
                   Center(
                     child: Text(
-                      'Corners Content',
+                      'Corners Content: $userName',
                       style: TextStyle(fontSize: 24),
                     ),
                   ),
