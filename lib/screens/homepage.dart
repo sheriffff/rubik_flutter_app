@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'config_screen.dart';
+import 'practice_screen.dart';
 
 class Homepage extends StatefulWidget {
   final String userName;
@@ -22,7 +24,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hi ${widget.userName}'),
+        title: Text(widget.userName),
       ),
       body: _screens[_currentIndex],  // Show selected screen
       bottomNavigationBar: BottomNavigationBar(
@@ -42,30 +44,6 @@ class _HomepageState extends State<Homepage> {
             label: 'Practice',
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ConfigScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Config Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class PracticeScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Practice Screen',
-        style: TextStyle(fontSize: 24),
       ),
     );
   }
