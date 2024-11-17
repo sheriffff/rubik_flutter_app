@@ -1,19 +1,71 @@
 import 'package:flutter/material.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   final String userName;
 
   Homepage({required this.userName});
 
   @override
+  _HomepageState createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  int _currentIndex = 0;  // Index for bottom navigation
+
+  // Screens for bottom navigation
+  final List<Widget> _screens = [
+    ConfigScreen(),
+    PracticeScreen(),
+  ];
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Welcome')),
-      body: Center(
-        child: Text(
-          'Hi $userName',
-          style: TextStyle(fontSize: 24),
-        ),
+      appBar: AppBar(
+        title: Text('Hi ${widget.userName}'),
+      ),
+      body: _screens[_currentIndex],  // Show selected screen
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;  // Update the current index
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Config',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.play_arrow),
+            label: 'Practice',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ConfigScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Config Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
+
+class PracticeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Practice Screen',
+        style: TextStyle(fontSize: 24),
       ),
     );
   }
