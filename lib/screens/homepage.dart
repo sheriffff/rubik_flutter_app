@@ -5,7 +5,7 @@ import 'practice_screen.dart';
 class Homepage extends StatefulWidget {
   final String userName;
 
-  Homepage({required this.userName});
+  const Homepage({super.key, required this.userName});
 
   @override
   _HomepageState createState() => _HomepageState();

@@ -5,7 +5,7 @@ import 'letter_pairs_tab.dart';    // Import Letter Pairs Tab
 class ConfigScreen extends StatefulWidget {
   final String userName;
 
-  ConfigScreen({required this.userName});
+  const ConfigScreen({super.key, required this.userName});
 
   @override
   _ConfigScreenState createState() => _ConfigScreenState();

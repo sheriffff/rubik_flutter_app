@@ -6,6 +6,8 @@ import 'screens/homepage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,6 +18,8 @@ class MyApp extends StatelessWidget {
 }
 
 class UserSelectionScreen extends StatefulWidget {
+  const UserSelectionScreen({super.key});
+
   @override
   _UserSelectionScreenState createState() => _UserSelectionScreenState();
 }

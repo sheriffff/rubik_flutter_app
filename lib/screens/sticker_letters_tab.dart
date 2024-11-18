@@ -5,7 +5,7 @@ import 'dart:convert';
 class StickerLettersTab extends StatefulWidget {
   final String userName;
 
-  StickerLettersTab({required this.userName});
+  const StickerLettersTab({super.key, required this.userName});
 
   @override
   _StickerLettersTabState createState() => _StickerLettersTabState();

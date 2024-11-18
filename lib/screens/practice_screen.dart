@@ -3,6 +3,8 @@ import 'letter_pairs_tab.dart';    // Import Letter Pairs Tab
 import 'commutators_tab.dart';    // Import Commutators Tab
 
 class PracticeScreen extends StatefulWidget {
+  const PracticeScreen({super.key});
+
   @override
   _PracticeScreenState createState() => _PracticeScreenState();
 }
