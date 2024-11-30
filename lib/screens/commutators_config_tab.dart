@@ -105,8 +105,8 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
             .map(
               (item) => DataRow(
             cells: [
-              DataCell(Text(item['first_sticker'] ?? '')),
-              DataCell(Text(item['second_sticker'] ?? '')),
+              DataCell(Text(item['first_letter'] ?? '')),
+              DataCell(Text(item['second_letter'] ?? '')),
               DataCell(Text(item['commutator'] ?? '')),
             ],
           ),
@@ -128,8 +128,8 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
             .map(
               (item) => DataRow(
             cells: [
-              DataCell(Text(item['first_sticker'] ?? '')),
-              DataCell(Text(item['second_sticker'] ?? '')),
+              DataCell(Text(item['first_letter'] ?? '')),
+              DataCell(Text(item['second_letter'] ?? '')),
               DataCell(Text(item['commutator'] ?? '')),
             ],
           ),
