@@ -47,7 +47,7 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
         children: [
           StickerLettersConfigTab(userName: widget.userName),
           LetterPairsConfigTab(),
-          CommutatorsConfigTab(),
+          CommutatorsConfigTab(userName: widget.userName),
         ],
       ),
     );
