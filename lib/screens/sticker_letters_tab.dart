@@ -51,8 +51,8 @@ class _StickerLettersTabState extends State<StickerLettersTab> {
           toolbarHeight: 0,  // This removes the blank space
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Edges'),
               Tab(text: 'Corners'),
+              Tab(text: 'Edges'),
             ],
           ),
         ),
@@ -60,8 +60,8 @@ class _StickerLettersTabState extends State<StickerLettersTab> {
             ? Center(child: CircularProgressIndicator())
             : TabBarView(
           children: [
-            buildTable(edges),
             buildTable(corners),
+            buildTable(edges),
           ],
         ),
       ),
