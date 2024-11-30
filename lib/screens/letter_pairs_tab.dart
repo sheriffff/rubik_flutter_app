@@ -7,7 +7,7 @@ class LetterPairsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Letter Pairs Content',
+        'Letter Pairs Practice Content',
         style: TextStyle(fontSize: 24),
       ),
     );

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class StickerLettersTab extends StatefulWidget {
+class StickerLettersConfigTab extends StatefulWidget {
   final String userName;
 
-  const StickerLettersTab({super.key, required this.userName});
+  const StickerLettersConfigTab({super.key, required this.userName});
 
   @override
-  _StickerLettersTabState createState() => _StickerLettersTabState();
+  _StickerLettersConfigTabState createState() => _StickerLettersConfigTabState();
 }
 
-class _StickerLettersTabState extends State<StickerLettersTab> {
+class _StickerLettersConfigTabState extends State<StickerLettersConfigTab> {
   List<Map<String, String>> edges = [];
   List<Map<String, String>> corners = [];
   bool isLoading = true;

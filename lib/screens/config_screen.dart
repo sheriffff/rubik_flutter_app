@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'sticker_letters_tab.dart';  // Import Sticker Letters Tab
-import 'letter_pairs_tab.dart';    // Import Letter Pairs Tab
+import 'letter_pairs_config_tab.dart';
+import 'sticker_letters_config_tab.dart';  // Import Sticker Letters Tab
 import 'commutators_config_tab.dart';  // Import Commutators Config Tab
 
 class ConfigScreen extends StatefulWidget {
@@ -45,8 +45,8 @@ class _ConfigScreenState extends State<ConfigScreen> with SingleTickerProviderSt
       body: TabBarView(
         controller: _tabController,
         children: [
-          StickerLettersTab(userName: widget.userName),
-          LetterPairsTab(),
+          StickerLettersConfigTab(userName: widget.userName),
+          LetterPairsConfigTab(),
           CommutatorsConfigTab(),
         ],
       ),
