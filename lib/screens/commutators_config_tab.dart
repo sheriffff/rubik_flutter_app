@@ -17,6 +17,8 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
   bool isLoadingEdges = true;
   bool isLoadingCorners = true;
 
+  String selectedLetterFilter = 'All';
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +66,12 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
     }
   }
 
+  List<String> getUniqueLetters(List<Map<String, String>> data) {
+    final letters = data.map((item) => item['first_letter'] ?? '').toSet().toList();
+    letters.sort();
+    return ['All', ...letters];
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -83,59 +91,68 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
           children: [
             isLoadingCorners
                 ? Center(child: CircularProgressIndicator())
-                : buildCornersTable(cornersCommutators),
+                : buildNestedTabView(cornersCommutators),
             isLoadingEdges
                 ? Center(child: CircularProgressIndicator())
-                : buildEdgesTable(edgesCommutators),
+                : buildNestedTabView(edgesCommutators),
           ],
         ),
       ),
     );
   }
 
-  Widget buildEdgesTable(List<Map<String, String>> data) {
-    return SingleChildScrollView(
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('L1')),
-          DataColumn(label: Text('L2')),
-          DataColumn(label: Text('Commutator')),
-        ],
-        rows: data
-            .map(
-              (item) => DataRow(
-            cells: [
-              DataCell(Text(item['first_letter'] ?? '')),
-              DataCell(Text(item['second_letter'] ?? '')),
-              DataCell(Text(item['commutator'] ?? '')),
-            ],
+  Widget buildNestedTabView(List<Map<String, String>> data) {
+    final uniqueLetters = getUniqueLetters(data);
+
+    return DefaultTabController(
+      length: uniqueLetters.length,
+      child: Column(
+        children: [
+          TabBar(
+            isScrollable: true,
+            tabs: uniqueLetters.map((letter) => Tab(text: letter)).toList(),
+            onTap: (index) {
+              setState(() {
+                selectedLetterFilter = uniqueLetters[index];
+              });
+            },
           ),
-        )
-            .toList(),
+          Expanded(
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              children: uniqueLetters.map((letter) {
+                final filteredData = letter == 'All'
+                    ? data
+                    : data.where((item) => item['first_letter'] == letter).toList();
+                return SingleChildScrollView(
+                  child: buildDataTable(filteredData),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-    Widget buildCornersTable(List<Map<String, String>> data) {
-    return SingleChildScrollView(
-      child: DataTable(
-        columns: const [
-          DataColumn(label: Text('L1')),
-          DataColumn(label: Text('L2')),
-          DataColumn(label: Text('Commutator')),
-        ],
-        rows: data
-            .map(
-              (item) => DataRow(
-            cells: [
-              DataCell(Text(item['first_letter'] ?? '')),
-              DataCell(Text(item['second_letter'] ?? '')),
-              DataCell(Text(item['commutator'] ?? '')),
-            ],
-          ),
-        )
-            .toList(),
-      ),
+  Widget buildDataTable(List<Map<String, String>> data) {
+    return DataTable(
+      columns: const [
+        DataColumn(label: Text('L1')),
+        DataColumn(label: Text('L2')),
+        DataColumn(label: Text('Commutator')),
+      ],
+      rows: data
+          .map(
+            (item) => DataRow(
+          cells: [
+            DataCell(Text(item['first_letter'] ?? '')),
+            DataCell(Text(item['second_letter'] ?? '')),
+            DataCell(Text(item['commutator'] ?? '')),
+          ],
+        ),
+      )
+          .toList(),
     );
   }
 }
