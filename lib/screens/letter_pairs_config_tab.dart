@@ -12,7 +12,7 @@ class LetterPairsConfigTab extends StatefulWidget {
 }
 
 class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
-  List<Map<String, String>> letterPairs = [];
+  List<Map<String, dynamic>> letterPairs = [];
   bool isLoading = true;
   String selectedLetterFilter = 'All';
 
@@ -29,9 +29,9 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
 
       if (response.statusCode == 200) {
         setState(() {
-          letterPairs = List<Map<String, String>>.from(
+          letterPairs = List<Map<String, dynamic>>.from(
               (json.decode(response.body) as List)
-                  .map((item) => Map<String, String>.from(item)));
+                  .map((item) => Map<String, dynamic>.from(item)));
           isLoading = false;
         });
       } else {
@@ -45,9 +45,9 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
   Future<void> updateLetterPair(int id, String column, String newValue) async {
     try {
       final response = await http.patch(
-        Uri.parse('http://82.223.54.117:5000/letter_pairs/$id'),
+        Uri.parse('http://82.223.54.117:5000/update_letter_pair/$id'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({column: newValue}),
+        body: json.encode({"newWord": newValue}),
       );
 
       if (response.statusCode != 200) {
@@ -58,11 +58,16 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
     }
   }
 
-  List<String> getUniqueLetters(List<Map<String, String>> data) {
-    final letters = data.map((item) => item['first_letter'] ?? '').toSet().toList();
+
+  List<String> getUniqueLetters(List<Map<String, dynamic>> data) {
+    final letters = data
+        .map((item) => item['first_letter']?.toString() ?? '') // Safely extract as a string
+        .toSet()
+        .toList();
     letters.sort();
     return ['All', ...letters];
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +76,7 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
         : buildNestedTabView(letterPairs);
   }
 
-  Widget buildNestedTabView(List<Map<String, String>> data) {
+  Widget buildNestedTabView(List<Map<String, dynamic>> data) {
     final uniqueLetters = getUniqueLetters(data);
 
     return DefaultTabController(
@@ -105,31 +110,36 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
     );
   }
 
-  Widget buildDataTable(List<Map<String, String>> data) {
+
+  Widget buildDataTable(List<Map<String, dynamic>> data) {
     return DataTable(
       columns: const [
         DataColumn(label: Text('L1')),
         DataColumn(label: Text('L2')),
         DataColumn(label: Text('Word')),
       ],
-      rows: data
-          .map(
-            (pair) => DataRow(
+      rows: data.map((pair) {
+        return DataRow(
           cells: [
             DataCell(Text(pair['first_letter'] ?? '')),
             DataCell(Text(pair['second_letter'] ?? '')),
             DataCell(
               Text(pair['word'] ?? ''),
-              onTap: () => _editCell(context, pair['id']!, 'word', pair['word'] ?? ''),
+              onTap: () => _editCell(
+                context,
+                pair['id'], // Pass id as int
+                'word',
+                pair['word'] ?? '',
+              ),
             ),
           ],
-        ),
-      )
-          .toList(),
+        );
+      }).toList(),
     );
   }
 
-  void _editCell(BuildContext context, String id, String column, String currentValue) {
+
+  void _editCell(BuildContext context, int id, String column, String currentValue) {
     final controller = TextEditingController(text: currentValue);
     showDialog(
       context: context,
@@ -153,7 +163,7 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
                     final index = letterPairs.indexWhere((pair) => pair['id'] == id);
                     if (index != -1) letterPairs[index][column] = newValue;
                   });
-                  await updateLetterPair(int.parse(id), column, newValue);
+                  await updateLetterPair(id, column, newValue);
                 }
                 Navigator.of(context).pop();
               },
