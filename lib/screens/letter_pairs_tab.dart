@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
+import 'dart:async';
 
 class LetterPairsTab extends StatefulWidget {
   final String userName;
@@ -19,11 +20,20 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
   final Random _random = Random();
   Map<String, dynamic>? currentPair;
   bool showWord = false;
+  String selectedMode = 'Tap'; // Default mode
+  int timeInterval = 1; // Default time interval
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     fetchLetterPairs();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   Future<void> fetchLetterPairs() async {
@@ -91,6 +101,18 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
     });
   }
 
+  void startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(Duration(seconds: timeInterval), (timer) {
+      setState(() {
+        showWord = !showWord;
+        if (!showWord) {
+          currentPair = getRandomFilteredPair();
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
@@ -108,9 +130,9 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
     int total = letters.length;
     int columns = 7;
     int rows = (total / columns).ceil();
-    String selectedMode = 'Tap'; // Default mode
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
@@ -152,7 +174,6 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
           }),
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Radio<String>(
               value: 'Tap',
@@ -160,6 +181,7 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
               onChanged: (String? value) {
                 setState(() {
                   selectedMode = value!;
+                  _timer?.cancel();
                 });
               },
             ),
@@ -170,15 +192,38 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
               onChanged: (String? value) {
                 setState(() {
                   selectedMode = value!;
+                  startTimer();
                 });
               },
             ),
             Text('Time'),
+            if (selectedMode == 'Time') ...[
+              SizedBox(width: 16),
+              Text('t: ${timeInterval}s'),
+              SizedBox(width: 8),
+              SizedBox(
+                width: 150,
+                child: Slider(
+                  value: timeInterval.toDouble(),
+                  min: 1,
+                  max: 5,
+                  divisions: 4,
+                  label: timeInterval.toString(),
+                  onChanged: (double value) {
+                    setState(() {
+                      timeInterval = value.toInt();
+                      startTimer();
+                    });
+                  },
+                ),
+              ),
+            ],
           ],
         ),
       ],
     );
   }
+
 
   Widget buildRandomPairDisplay() {
     final randomPair = currentPair ?? getRandomFilteredPair();
@@ -186,24 +231,22 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
       return Center(child: Text('No pairs available'));
     }
 
-    // Define fixed heights for each section to prevent shifting
     const double letterFontSize = 40;
     const double wordFontSize = 60;
-    const double wordHeight = 80; // Enough space for the larger word font
-    const double imageHeight = 200;
-    const double verticalOffset = 30; // Adjust this value to move the letters lower
-    const double imageOffset = 40; // Extra offset for the image
+    const double wordHeight = 80;
+    const double imageHeight = 140;
+    const double verticalOffset = 30;
+    const double imageOffset = 40;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: handleTap,
+      onTap: selectedMode == 'Tap' ? handleTap : null,
       child: Center(
         child: SizedBox(
           width: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start, // Start at the upper part
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // Add padding to move the letters lower
               Padding(
                 padding: EdgeInsets.only(top: verticalOffset),
                 child: SizedBox(
@@ -218,7 +261,6 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
                 ),
               ),
               SizedBox(height: 20),
-              // Word area, fixed height whether word is shown or not
               SizedBox(
                 height: wordHeight,
                 child: showWord
@@ -231,8 +273,7 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
                 )
                     : SizedBox.shrink(),
               ),
-              SizedBox(height: imageOffset), // Extra offset for the image
-              // Test image below
+              SizedBox(height: imageOffset),
               SizedBox(
                 height: imageHeight,
                 child: Image.network(
