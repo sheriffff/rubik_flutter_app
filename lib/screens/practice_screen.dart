@@ -3,7 +3,8 @@ import 'letter_pairs_tab.dart';    // Import Letter Pairs Tab
 import 'commutators_tab.dart';    // Import Commutators Tab
 
 class PracticeScreen extends StatefulWidget {
-  const PracticeScreen({super.key});
+  final String userName;
+  const PracticeScreen({super.key, required this.userName});
 
   @override
   _PracticeScreenState createState() => _PracticeScreenState();
@@ -41,7 +42,7 @@ class _PracticeScreenState extends State<PracticeScreen> with SingleTickerProvid
       body: TabBarView(
         controller: _tabController,
         children: [
-          LetterPairsTab(),
+          LetterPairsTab(userName: widget.userName),
           CommutatorsTab(),
         ],
       ),

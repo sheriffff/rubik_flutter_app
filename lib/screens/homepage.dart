@@ -22,7 +22,7 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     _screens = [
       ConfigScreen(userName: widget.userName),
-      PracticeScreen(),
+      PracticeScreen(userName: widget.userName),
     ];
   }
 
