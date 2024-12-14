@@ -137,20 +137,21 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
 
   Widget buildDataTable(List<Map<String, String>> data) {
     return DataTable(
+      columnSpacing: 10,
       columns: const [
         DataColumn(label: Text('L1')),
         DataColumn(label: Text('L2')),
-        DataColumn(label: Text('Commutator')),
         DataColumn(label: Text('Comm')),
+        DataColumn(label: Text('Commutator')),
       ],
       rows: data
           .map(
             (item) => DataRow(
           cells: [
-            DataCell(Text(item['first_letter'] ?? '')),
-            DataCell(Text(item['second_letter'] ?? '')),
+            DataCell(SizedBox(width: 20, child: Text(item['first_letter'] ?? ''))),
+            DataCell(SizedBox(width: 30, child: Text(item['second_letter'] ?? ''))),
+            DataCell(SizedBox(width: 150, child: Text(item['commutator_simplified'] ?? ''))), // Adjust this width as needed
             DataCell(Text(item['commutator'] ?? '')),
-            DataCell(Text(item['commutator_simplified'] ?? '')),
           ],
         ),
       )
