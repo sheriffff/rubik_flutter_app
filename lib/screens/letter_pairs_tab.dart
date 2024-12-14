@@ -17,6 +17,8 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
   bool isLoading = true;
   Map<String, bool> letterFilter = {};
   final Random _random = Random();
+  Map<String, dynamic>? currentPair;
+  bool showWord = false;
 
   @override
   void initState() {
@@ -80,16 +82,25 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
     return filteredPairs[_random.nextInt(filteredPairs.length)];
   }
 
+  void handleTap() {
+    setState(() {
+      if (showWord) {
+        currentPair = getRandomFilteredPair();
+      }
+      showWord = !showWord;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return isLoading
         ? Center(child: CircularProgressIndicator())
         : Column(
-            children: [
-              buildFilterControls(),
-              Expanded(child: buildRandomPairDisplay()),
-            ],
-          );
+      children: [
+        buildFilterControls(),
+        Expanded(child: buildRandomPairDisplay()),
+      ],
+    );
   }
 
   Widget buildFilterControls() {
@@ -144,18 +155,68 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
   }
 
   Widget buildRandomPairDisplay() {
-    final randomPair = getRandomFilteredPair();
+    final randomPair = currentPair ?? getRandomFilteredPair();
     if (randomPair == null) {
       return Center(child: Text('No pairs available'));
     }
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('L1: ${randomPair['first_letter'] ?? ''}'),
-          Text('L2: ${randomPair['second_letter'] ?? ''}'),
-          Text('Word: ${randomPair['word'] ?? ''}'),
-        ],
+
+    // Define fixed heights for each section to prevent shifting
+    const double letterFontSize = 40;
+    const double wordFontSize = 60;
+    const double wordHeight = 80; // Enough space for the larger word font
+    const double imageHeight = 200;
+    const double verticalOffset = 30; // Adjust this value to move the letters lower
+    const double imageOffset = 40; // Extra offset for the image
+
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: handleTap,
+      child: Center(
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start, // Start at the upper part
+            children: [
+              // Add padding to move the letters lower
+              Padding(
+                padding: EdgeInsets.only(top: verticalOffset),
+                child: SizedBox(
+                  height: letterFontSize * 1.2,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Text(
+                      '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}',
+                      style: TextStyle(fontSize: letterFontSize),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Word area, fixed height whether word is shown or not
+              SizedBox(
+                height: wordHeight,
+                child: showWord
+                    ? FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    randomPair['word'] ?? '',
+                    style: TextStyle(fontSize: wordFontSize),
+                  ),
+                )
+                    : SizedBox.shrink(),
+              ),
+              SizedBox(height: imageOffset), // Extra offset for the image
+              // Test image below
+              SizedBox(
+                height: imageHeight,
+                child: Image.network(
+                  'https://via.placeholder.com/150',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
