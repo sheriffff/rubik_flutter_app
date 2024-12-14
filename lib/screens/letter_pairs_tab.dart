@@ -108,6 +108,7 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
     int total = letters.length;
     int columns = 7;
     int rows = (total / columns).ceil();
+    String selectedMode = 'Tap'; // Default mode
 
     return Column(
       children: [
@@ -149,6 +150,31 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
               }),
             );
           }),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Radio<String>(
+              value: 'Tap',
+              groupValue: selectedMode,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedMode = value!;
+                });
+              },
+            ),
+            Text('Tap'),
+            Radio<String>(
+              value: 'Time',
+              groupValue: selectedMode,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedMode = value!;
+                });
+              },
+            ),
+            Text('Time'),
+          ],
         ),
       ],
     );
