@@ -141,6 +141,7 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
         DataColumn(label: Text('L1')),
         DataColumn(label: Text('L2')),
         DataColumn(label: Text('Commutator')),
+        DataColumn(label: Text('Comm')),
       ],
       rows: data
           .map(
@@ -149,6 +150,7 @@ class _CommutatorsConfigTabState extends State<CommutatorsConfigTab> {
             DataCell(Text(item['first_letter'] ?? '')),
             DataCell(Text(item['second_letter'] ?? '')),
             DataCell(Text(item['commutator'] ?? '')),
+            DataCell(Text(item['commutator_simplified'] ?? '')),
           ],
         ),
       )
