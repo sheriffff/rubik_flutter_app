@@ -19,18 +19,22 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
   bool isLoading = true;
   String selectedMode = 'Tap';
   String selectedType = 'Edges';
+  String selectedFormat = 'Ls'; // 'Ls' for letters, 'W' for word
   int timeInterval = 2;
   Map<String, dynamic>? currentPair;
   Timer? _timer;
   final Random _random = Random();
 
+  // Map to store (first_letter, second_letter) -> word
+  Map<String, String> letterPairsWords = {};
+
   @override
   void initState() {
     super.initState();
-    fetchCommutators();
+    fetchData();
   }
 
-  Future<void> fetchCommutators() async {
+  Future<void> fetchData() async {
     try {
       final edgesResponse = await http.get(Uri.parse(
           'http://82.223.54.117:5000/commutators/edges/${widget.userName}'));
@@ -48,6 +52,20 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
           item['type'] = 'Corners';
         }
 
+        final letterPairsResponse = await http.get(Uri.parse(
+            'http://82.223.54.117:5000/letter_pairs/${widget.userName}'));
+
+        if (letterPairsResponse.statusCode == 200) {
+          final letterPairsData = List<Map<String, dynamic>>.from(json.decode(letterPairsResponse.body) as List);
+          for (var pairItem in letterPairsData) {
+            final fl = pairItem['first_letter'];
+            final sl = pairItem['second_letter'];
+            final w = pairItem['word'];
+            final key = '$fl $sl';
+            letterPairsWords[key] = w;
+          }
+        }
+
         setState(() {
           commutators = [...edgesData, ...cornersData];
           isLoading = false;
@@ -58,7 +76,7 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
         throw Exception('Failed to load commutators');
       }
     } catch (e) {
-      print('Error fetching commutators: $e');
+      print('Error fetching data: $e');
     }
   }
 
@@ -246,6 +264,32 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
             ],
           ],
         ),
+        SizedBox(height: 8),
+        // Ls/W radio row, right beneath the Tap/Time radio, kept close
+        Row(
+          children: [
+            Radio<String>(
+              value: 'Ls',
+              groupValue: selectedFormat,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedFormat = value!;
+                });
+              },
+            ),
+            Text('Ls'),
+            Radio<String>(
+              value: 'W',
+              groupValue: selectedFormat,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedFormat = value!;
+                });
+              },
+            ),
+            Text('W'),
+          ],
+        ),
       ],
     );
   }
@@ -257,9 +301,19 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
     }
 
     const double letterFontSize = 40;
-    const double commutatorFontSize = 30;
+    const double commutatorSimplifiedFontSize = 30;
+    const double commutatorFontSize = 20;
     const double buttonShowNextFontSize = 20;
     const double verticalOffset = 30;
+
+    // Determine the displayed label based on selectedFormat
+    String displayedLabel;
+    if (selectedFormat == 'W') {
+      final key = '${randomPair['first_letter']} ${randomPair['second_letter']}';
+      displayedLabel = letterPairsWords[key] ?? '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}';
+    } else {
+      displayedLabel = '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}';
+    }
 
     return Center(
       child: SizedBox(
@@ -275,7 +329,7 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
                 children: [
                   SizedBox(width: 60),
                   Text(
-                    '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}',
+                    displayedLabel,
                     style: TextStyle(fontSize: letterFontSize),
                   ),
                   GestureDetector(
@@ -291,7 +345,7 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
                   ),
                 ],
               ),
-              SizedBox(height: 60),
+              SizedBox(height: 40),
               SizedBox(
                 child: Center(
                   child: Column(
@@ -300,10 +354,9 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
                       Text(
                         randomPair['commutator_simplified'] ?? '',
                         style: TextStyle(
-                            fontSize: commutatorFontSize,
-                            color: Colors.blue,
+                          fontSize: commutatorSimplifiedFontSize,
+                          color: Colors.blue,
                         ),
-
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
@@ -322,5 +375,5 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
       ),
     );
   }
-
 }
+
