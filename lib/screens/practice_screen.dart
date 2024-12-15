@@ -43,7 +43,7 @@ class _PracticeScreenState extends State<PracticeScreen> with SingleTickerProvid
         controller: _tabController,
         children: [
           LetterPairsTab(userName: widget.userName),
-          CommutatorsTab(),
+          CommutatorsTab(userName: widget.userName),
         ],
       ),
     );
