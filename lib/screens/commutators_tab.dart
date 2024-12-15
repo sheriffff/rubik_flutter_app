@@ -130,7 +130,7 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
   Widget buildFilterControls() {
     final letters = letterFilter.keys.toList();
     int total = letters.length;
-    int columns = 8;
+    int columns = 7;
     int rows = (total / columns).ceil();
 
     return Column(
