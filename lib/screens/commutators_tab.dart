@@ -136,10 +136,34 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Row with All/None and Edges/Corners
         Row(
           children: [
             ElevatedButton(onPressed: checkAll, child: Text('All')),
             ElevatedButton(onPressed: clearAll, child: Text('None')),
+            SizedBox(width: 16),
+            Radio<String>(
+              value: 'Edges',
+              groupValue: selectedType,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedType = value!;
+                  currentPair = getRandomFilteredPair();
+                });
+              },
+            ),
+            Text('Edges'),
+            Radio<String>(
+              value: 'Corners',
+              groupValue: selectedType,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedType = value!;
+                  currentPair = getRandomFilteredPair();
+                });
+              },
+            ),
+            Text('Corners'),
           ],
         ),
         Table(
@@ -222,32 +246,6 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
             ],
           ],
         ),
-        Row(
-          children: [
-            Radio<String>(
-              value: 'Edges',
-              groupValue: selectedType,
-              onChanged: (String? value) {
-                setState(() {
-                  selectedType = value!;
-                  currentPair = getRandomFilteredPair();
-                });
-              },
-            ),
-            Text('Edges'),
-            Radio<String>(
-              value: 'Corners',
-              groupValue: selectedType,
-              onChanged: (String? value) {
-                setState(() {
-                  selectedType = value!;
-                  currentPair = getRandomFilteredPair();
-                });
-              },
-            ),
-            Text('Corners'),
-          ],
-        ),
       ],
     );
   }
@@ -275,7 +273,7 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(width: 60), // No SHOW button
+                  SizedBox(width: 60),
                   Text(
                     '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}',
                     style: TextStyle(fontSize: letterFontSize),
@@ -323,5 +321,11 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 }
