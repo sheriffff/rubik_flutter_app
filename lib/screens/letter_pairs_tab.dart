@@ -224,6 +224,21 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
     );
   }
 
+  void handleShow() {
+    setState(() {
+      showWord = true;
+    });
+  }
+
+  void handleNext() {
+    setState(() {
+      currentPair = getRandomFilteredPair();
+      showWord = false;
+    });
+    if (selectedMode == 'Time') {
+      startTimer();
+    }
+  }
 
   Widget buildRandomPairDisplay() {
     final randomPair = currentPair ?? getRandomFilteredPair();
@@ -232,46 +247,73 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
     }
 
     const double letterFontSize = 40;
-    const double wordFontSize = 60;
-    const double wordHeight = 80;
+    const double wordFontSize = 50;
+    const double buttonShowNextFontSize = 20;
+    const double wordAreaHeight = 80;
     const double imageHeight = 140;
     const double verticalOffset = 30;
     const double imageOffset = 40;
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: selectedMode == 'Tap' ? handleTap : null,
-      child: Center(
-        child: SizedBox(
-          width: double.infinity,
+    return Center(
+      child: SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.only(top: verticalOffset),
-                child: SizedBox(
-                  height: letterFontSize * 1.2,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
+              SizedBox(height: verticalOffset),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // In timer mode, no SHOW. In tap mode, show or hide based on showWord state.
+                  if (selectedMode == 'Tap')
+                    (!showWord
+                        ? GestureDetector(
+                      onTap: handleShow,
+                      child: Text(
+                        'SHOW',
+                        style: TextStyle(
+                          fontSize: buttonShowNextFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                        ),
+                      ),
+                    )
+                        : SizedBox(width: 60))
+                  else
+                    SizedBox(width: 60),
+
+                  Text(
+                    '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}',
+                    style: TextStyle(fontSize: letterFontSize),
+                  ),
+
+                  GestureDetector(
+                    onTap: handleNext,
                     child: Text(
-                      '${randomPair['first_letter'] ?? ''} ${randomPair['second_letter'] ?? ''}',
-                      style: TextStyle(fontSize: letterFontSize),
+                      'NEXT',
+                      style: TextStyle(
+                        fontSize: buttonShowNextFontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
               SizedBox(height: 20),
               SizedBox(
-                height: wordHeight,
-                child: showWord
-                    ? FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
+                height: wordAreaHeight,
+                child: Center(
+                  child: showWord
+                      ? Text(
                     randomPair['word'] ?? '',
                     style: TextStyle(fontSize: wordFontSize),
-                  ),
-                )
-                    : SizedBox.shrink(),
+                    textAlign: TextAlign.center,
+                  )
+                      : SizedBox.shrink(),
+                ),
               ),
               SizedBox(height: imageOffset),
               SizedBox(
@@ -287,4 +329,5 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
       ),
     );
   }
+
 }
