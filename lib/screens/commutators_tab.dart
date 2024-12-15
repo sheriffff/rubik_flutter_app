@@ -323,9 +323,4 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
     );
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
 }
