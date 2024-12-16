@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'letter_pairs_tab.dart';    // Import Letter Pairs Tab
-import 'commutators_tab.dart';    // Import Commutators Tab
+import 'letter_pairs_tab.dart';
+import 'commutators_tab.dart';
 
 class PracticeScreen extends StatefulWidget {
   final String userName;
@@ -16,7 +16,7 @@ class _PracticeScreenState extends State<PracticeScreen> with SingleTickerProvid
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // Number of tabs
+    _tabController = TabController(length: 3, vsync: this); // now 3 tabs
   }
 
   @override
@@ -29,8 +29,8 @@ class _PracticeScreenState extends State<PracticeScreen> with SingleTickerProvid
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Practice'),
-        automaticallyImplyLeading: false,  // This removes the extra back button
+        title: const Text('Practice'),
+        automaticallyImplyLeading: false,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

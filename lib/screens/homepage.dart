@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'config_screen.dart';
 import 'practice_screen.dart';
+import 'notes_screen.dart';
 
 class Homepage extends StatefulWidget {
   final String userName;
@@ -23,6 +24,7 @@ class _HomepageState extends State<Homepage> {
     _screens = [
       ConfigScreen(userName: widget.userName),
       PracticeScreen(userName: widget.userName),
+      NotesScreen(userName: widget.userName),
     ];
   }
 
@@ -59,6 +61,10 @@ class _HomepageState extends State<Homepage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.play_arrow),
             label: 'Practice',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.note),
+            label: 'Notes',
           ),
         ],
       ),
