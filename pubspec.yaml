@@ -1,4 +1,4 @@
-name: rubik_app
+name: "Rubik Blind Copilot"
 description: "An app to manage Rubik BLD method"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
