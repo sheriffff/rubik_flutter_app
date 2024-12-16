@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:crypto/crypto.dart'; // Import for hashing
 import 'screens/homepage.dart';
 import 'app_info.dart'; // Import the app_info.dart file
-import 'package:intl/intl.dart'; // Add this import for date formatting
-import 'package:rubik_app/config.dart';
-
+import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:rubik_app/config.dart'; // Ensure this contains your baseUrl
 
 void main() => runApp(MyApp());
 
@@ -50,7 +50,131 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
       }
     } catch (e) {
       print('Error fetching users: $e');
+      // Optionally, show an error message to the user
     }
+  }
+
+  /// Function to handle password verification
+  Future<bool> verifyPassword(String username, String password) async {
+    try {
+      // Hash the password using SHA-256
+      var bytes = utf8.encode(password);
+      var digest = sha256.convert(bytes);
+      String hashedPassword = digest.toString();
+
+      // Prepare the request body
+      Map<String, String> requestBody = {
+        'username': username,
+        'hashedPassword': hashedPassword,
+      };
+
+      // Make the POST request to verify the password
+      final response = await http.post(
+        Uri.parse('$baseUrl/verify_password'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        return responseData['isValid'] as bool;
+      } else {
+        // Handle server errors
+        print('Server error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Error verifying password: $e');
+      return false;
+    }
+  }
+
+  /// Function to show the password dialog
+  void _showPasswordDialog(String username) {
+    final _passwordController = TextEditingController();
+    final _formKey = GlobalKey<FormState>();
+    bool _isLoading = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false, // User must tap a button
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Enter Password'),
+              content: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              actions: [
+                if (_isLoading)
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  )
+                else ...[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: Text('Cancel'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        String enteredPassword = _passwordController.text;
+
+                        bool isValid = await verifyPassword(username, enteredPassword);
+
+                        setState(() {
+                          _isLoading = false;
+                        });
+
+                        if (isValid) {
+                          Navigator.of(context).pop(); // Close the dialog
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Homepage(userName: username),
+                            ),
+                          );
+                        } else {
+                          // Show error message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Incorrect password. Please try again.'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    },
+                    child: Text('Submit'),
+                  ),
+                ],
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -83,12 +207,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Homepage(userName: users[index]),
-                        ),
-                      );
+                      _showPasswordDialog(users[index]);
                     },
                     child: Text(users[index]),
                   ),
