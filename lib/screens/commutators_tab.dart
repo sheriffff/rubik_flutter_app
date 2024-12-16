@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:rubik_app/config.dart';
 
 class CommutatorsTab extends StatefulWidget {
   final String userName;
@@ -36,10 +37,8 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
 
   Future<void> fetchData() async {
     try {
-      final edgesResponse = await http.get(Uri.parse(
-          'http://82.223.54.117:5000/commutators/edges/${widget.userName}'));
-      final cornersResponse = await http.get(Uri.parse(
-          'http://82.223.54.117:5000/commutators/corners/${widget.userName}'));
+      final edgesResponse = await http.get(Uri.parse('$baseUrl/commutators/edges/${widget.userName}'));
+      final cornersResponse = await http.get(Uri.parse('$baseUrl/commutators/corners/${widget.userName}'));
 
       if (edgesResponse.statusCode == 200 && cornersResponse.statusCode == 200) {
         final edgesData = List<Map<String, dynamic>>.from(json.decode(edgesResponse.body) as List);
@@ -52,8 +51,7 @@ class _CommutatorsTabState extends State<CommutatorsTab> {
           item['type'] = 'Corners';
         }
 
-        final letterPairsResponse = await http.get(Uri.parse(
-            'http://82.223.54.117:5000/letter_pairs/${widget.userName}'));
+        final letterPairsResponse = await http.get(Uri.parse('$baseUrl/letter_pairs/${widget.userName}'));
 
         if (letterPairsResponse.statusCode == 200) {
           final letterPairsData = List<Map<String, dynamic>>.from(json.decode(letterPairsResponse.body) as List);

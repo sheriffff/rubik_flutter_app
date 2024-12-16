@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
 import 'dart:async';
+import 'package:rubik_app/config.dart';
 
 class LetterPairsTab extends StatefulWidget {
   final String userName;
@@ -38,8 +39,7 @@ class _LetterPairsTabState extends State<LetterPairsTab> {
 
   Future<void> fetchLetterPairs() async {
     try {
-      final response = await http.get(Uri.parse(
-          'http://82.223.54.117:5000/letter_pairs/${widget.userName}'));
+      final response = await http.get(Uri.parse('$baseUrl/letter_pairs/${widget.userName}'));
 
       if (response.statusCode == 200) {
         setState(() {

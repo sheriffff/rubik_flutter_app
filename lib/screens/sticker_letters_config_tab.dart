@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:rubik_app/config.dart';
 
 class StickerLettersConfigTab extends StatefulWidget {
   final String userName;
@@ -24,8 +25,8 @@ class _StickerLettersConfigTabState extends State<StickerLettersConfigTab> {
 
   Future<void> fetchData() async {
     try {
-      final edgesResponse = await http.get(Uri.parse('http://82.223.54.117:5000/stickers/edges/${widget.userName}'));
-      final cornersResponse = await http.get(Uri.parse('http://82.223.54.117:5000/stickers/corners/${widget.userName}'));
+      final edgesResponse = await http.get(Uri.parse('$baseUrl/stickers/edges/${widget.userName}'));
+      final cornersResponse = await http.get(Uri.parse('$baseUrl/stickers/corners/${widget.userName}'));
 
       if (edgesResponse.statusCode == 200 && cornersResponse.statusCode == 200) {
         setState(() {

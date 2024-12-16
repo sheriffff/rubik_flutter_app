@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:rubik_app/config.dart';
 
 class LetterPairsConfigTab extends StatefulWidget {
   final String userName;
@@ -24,8 +25,7 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
 
   Future<void> fetchLetterPairs() async {
     try {
-      final response = await http.get(Uri.parse(
-          'http://82.223.54.117:5000/letter_pairs/${widget.userName}'));
+      final response = await http.get(Uri.parse('$baseUrl/letter_pairs/${widget.userName}'));
 
       if (response.statusCode == 200) {
         setState(() {
@@ -45,7 +45,7 @@ class _LetterPairsConfigTabState extends State<LetterPairsConfigTab> {
   Future<void> updateLetterPair(int id, String column, String newValue) async {
     try {
       final response = await http.patch(
-        Uri.parse('http://82.223.54.117:5000/update_letter_pair/$id'),
+        Uri.parse('$baseUrl/update_letter_pair/$id'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({"newWord": newValue}),
       );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:rubik_app/config.dart';
 
 class NotesScreen extends StatefulWidget {
   final String userName;
@@ -12,8 +13,6 @@ class NotesScreen extends StatefulWidget {
 
 class _NotesScreenState extends State<NotesScreen> {
   List<dynamic> _notes = [];
-  final String baseUrl = 'http://82.223.54.117:5000';
-
   Future<void> _fetchNotes() async {
     final response = await http.get(Uri.parse('$baseUrl/notes/${widget.userName}'));
     if (response.statusCode == 200) {

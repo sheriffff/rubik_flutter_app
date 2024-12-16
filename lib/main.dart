@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'screens/homepage.dart';
 import 'app_info.dart'; // Import the app_info.dart file
 import 'package:intl/intl.dart'; // Add this import for date formatting
+import 'package:rubik_app/config.dart';
 
 
 void main() => runApp(MyApp());
@@ -38,7 +39,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
 
   Future<void> fetchUsers() async {
     try {
-      final response = await http.get(Uri.parse('http://82.223.54.117:5000/users'));
+      final response = await http.get(Uri.parse('$baseUrl/users'));
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
