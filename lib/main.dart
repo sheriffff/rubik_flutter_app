@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'screens/homepage.dart';
+import 'app_info.dart'; // Import the app_info.dart file
+import 'package:intl/intl.dart'; // Add this import for date formatting
+
 
 void main() => runApp(MyApp());
 
@@ -66,9 +69,13 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
           ],
         ),
       ),
-      body: users.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
+      body: Column(
+        children: [
+          // Expanded widget to take up remaining space for the user list
+          Expanded(
+            child: users.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
               itemCount: users.length,
               itemBuilder: (context, index) {
                 return Padding(
@@ -87,6 +94,32 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
                 );
               },
             ),
+          ),
+          // Divider to separate the user list from the app info
+          Divider(height: 1, color: Colors.grey),
+          // Container for app information
+          Container(
+            color: Colors.grey[200],
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'App Version: ${AppInfo.version}',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text('${DateFormat('dd MMMM yyyy').format(DateTime.parse(AppInfo.releaseDate))}'),
+                SizedBox(height: 8),
+                Text(
+                  'Features:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                ...AppInfo.features.map((feature) => Text('- $feature')).toList(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
